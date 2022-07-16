@@ -6,9 +6,9 @@ typedef struct reg{
     struct reg *prox;
 } celula;
 
-celula *busca(int x, celula *le){
+celula *busca(int x, celula *head){
     celula *aux;
-    aux = le;
+    aux = head;
     while (aux->prox != NULL && aux->conteudo != x) 
         aux = aux->prox;
 
@@ -23,7 +23,7 @@ celula *busca(int x, celula *le){
     }
 }
 
-void insere(int x, celula *p){
+void insere(int x, celula *body){
     celula *nova;
     nova = (celula*) malloc (sizeof (celula));
     if(nova == NULL){
@@ -31,22 +31,22 @@ void insere(int x, celula *p){
         exit(1);
     }
     nova->conteudo = x;
-    nova->prox = p->prox;
-    p->prox = nova;
+    nova->prox = body->prox;
+    body->prox = nova;
 }
 
-void remove(celula *p){
+void remove(celula *body){
     celula *lixo;
-    lixo = p->prox;
-    p->prox = lixo->prox;
+    lixo = body->prox;
+    body->prox = lixo->prox;
     free(lixo);
-}
+    }
 
-void imprima(celula *le, int numValores) {
+void imprima(celula *head, int numValores) {
     int i = numValores-1;
-    celula *p;
-    for(p = le->prox; p != NULL; p = p->prox){
-        cout << "valor[" << i << "]: " << p->conteudo << endl;
+    celula *exibir;
+    for(exibir = head->prox; exibir != NULL; exibir = exibir->prox){
+        cout << "valor[" << i << "]: " << exibir->conteudo << endl;
         i--;
     }
     cout << endl;
@@ -54,20 +54,20 @@ void imprima(celula *le, int numValores) {
 
 int main(void){
     int valorAux, escolha, numValores = 0;
-    celula *p = NULL, *le = NULL;
+    celula *body = NULL, *head = NULL, *posicaoEncontrada = NULL;
 
-    le = (celula*) malloc(sizeof(celula));
-    if(le == NULL){
-        free(le);
+    head = (celula*) malloc(sizeof(celula));
+    if(head == NULL){
+        free(head);
         exit(1);
     }
-    le->prox = NULL;
+    head->prox = NULL;
 
-    p = le;
+    body = head;
 
     do{
         cout << "[1] - inserir novo valor" << endl;
-        cout << "[2] - remover valor atual" << endl;
+        cout << "[2] - remover ultimo valor" << endl;
         cout << "[3] - buscar algum valor" << endl;
         cout << "[4] - imprimir a lista" << endl;
         cout << "[5] - sair" << "\n\n";
@@ -77,22 +77,22 @@ int main(void){
             case 1:
                 cout << "insira o novo valor: ";
                 cin >> valorAux;
-                insere(valorAux, p);
+                insere(valorAux, body);
                 cout << endl << "insercao concluida!" << endl;
                 numValores++;
                 break;
             case 2:
-                remove(p);
+                remove(body);
                 cout << "remocao concluida!" << endl;
                 numValores--;
                 break;
             case 3:
-                cout << "insira o novo para a busca: ";
+                cout << "insira o valor para a busca: ";
                 cin >> valorAux;
-                p = busca(valorAux, le);
+                posicaoEncontrada = busca(valorAux, head);
                 break;
             case 4:
-                imprima(le, numValores);
+                imprima(head, numValores);
                 break;
             case 5:
                 cout << "encerrando o programa, aguarde!" << endl;
@@ -104,8 +104,9 @@ int main(void){
 
     }while(escolha != 5);
 
-    free(p);
-    free(le);
+    free(body);
+    free(head);
+    free(posicaoEncontrada);
 
     return 0;
 }
